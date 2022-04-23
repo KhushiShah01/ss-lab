@@ -1,0 +1,66 @@
+DATA SEGMENT
+    ARR DB 01H, 02H, 09H, 0AH, 03H
+DATA ENDS
+EXTRA SEGMENT
+    ARR2 DB 05H DUP(?)
+EXTRA ENDS
+CODE SEGMENT 
+    ASSUME CS:CODE, DS:DATA, ES:EXTRA
+    START:
+    MOV AX, DATA
+    MOV DS, AX
+    MOV AX, EXTRA
+    MOV ES, AX
+    MOV DX, 0004H 
+    BACK2:
+    MOV CX, DX  
+    LEA SI, ARR
+    BACK1: 
+    MOV BL, [SI] 
+    INC SI
+    CMP BL, [SI]
+    JC SKIP1
+    XCHG BL, [SI]
+    DEC SI
+    XCHG BL, [SI] 
+    INC SI
+    SKIP1:
+    MOV BH, [SI] 
+    DEC CX
+    JNZ BACK1
+    DEC DX  
+    JNZ BACK2
+
+    MOV BX, 0005H
+    LEA SI, ARR
+    PRINT:
+    MOV AL, [SI]
+    AND AL, 0F0H
+    MOV CL, 04H
+    ROR AL, CL
+    ADD AL, 30H
+    CMP AL, 39H
+    JLE G1
+    ADD AL, 07H
+    G1:
+    MOV DL, AL
+    MOV AH, 02H
+    INT 21H
+    MOV AL, [SI]
+    AND AL, 0FH
+    ADD AL, 30H
+    CMP AL, 39H
+    JLE G2
+    ADD AL, 07H
+    G2:
+    MOV DL, AL 
+    MOV AH, 02H
+    INT 21H
+    INC SI
+    DEC BX
+    JNZ PRINT
+    
+    MOV AH, 4CH
+    INT 21H
+CODE ENDS
+END START

@@ -1,0 +1,43 @@
+DATA SEGMENT
+    
+    S1 DB 'malayalam$'
+    
+DATA ENDS
+
+EXTRA SEGMENT
+    S2 09H DUP(?) 
+    
+EXTRA ENDS
+
+CODE SEGMENT
+    ASSUME CS:CODE,DS:DATA,ES: EXTRA
+    START:
+    MOV AX,DATA
+    MOV DS,AX 
+    MOV AX,EXTRA
+    MOV ES,AX 
+    MOV CX,0009H
+    LEA SI,S1
+    LEA DI,S2+08H
+    MOV BX,0000H
+    
+    BACK: CLD
+    LODSB
+    STD
+    STOSB
+    LOOP BACK
+    
+    LEA SI,S1
+    LEA DI,S2
+    MOV CX,0009H
+    
+    CLD  
+    B1: CMPSB
+    JNZ SKIP
+    LOOP B1
+    INC BX 
+    SKIP:  
+
+
+    CODE ENDS
+    END START
